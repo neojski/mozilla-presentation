@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>Firefox Frontend — find bar, loop, e10s and more. Tomasz Kołodziejski</title>
+
+    <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+    <meta name="author" content="Hakim El Hattab">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+      if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+      }
+    </script>
+
+
+    <style>
+    #whimsy {
+      position: absolute;
+      left: 0;
+      top: 0;
+      transition: 3s linear;
+      width: 64px;
+      height: 64px;
+      transform: translate(-64px, -64px);
+    }
+    </style>
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <style>
+    /* Quick and dirty styling */
+    img {
+      border: 0 !important;
+    }
+    .reference {
+      text-align: right;
+      font-size: 60%;
+      line-height: 1;
+    }
+    .reference:before{
+      content: 'bug: ';
+    }
+    ul.no-bullets {
+      list-style: none !important; /* OMG don't do it, ever! */
+    }
+    li.plus:before {
+      content: "+";
+      margin-right: 5px;
+    }
+    li.minus:before {
+      content: "-";
+      margin-right: 5px;
+    }
+    .image-comparison {
+      position: relative;
+      overflow: hidden;
+    }
+    .image-comparison img {
+      float: left;
+      margin: 20px !important; /* reveal styles are not easily overridable */
+    }
+    </style>
+  </head>
+
+  <body>
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+        <section>
+          <h1>Firefox Frontend</h1>
+          <h3>find bar, loop, e10s and more</h3>
+          <p>
+            <small>Tomasz Kołodziejski</small>
+          </p>
+        </section>
+
+        <section>
+          <h2>Me</h2>
+          <ul>
+            <li class="fragment">Studying at the <a href="https://www.uj.edu.pl/">Jagiellonian University</a>
+              in <a href="http://en.wikipedia.org/wiki/Krak%C3%B3w">Kraków</a>.</li>
+            <li class="fragment"><a href="http://www.wolframalpha.com/input/?i=distance+from+krakow+to+san+francisco">Flew here 5967 miles</a>. <span class="fragment">That's 32 light milliseconds!</span></li>
+            <li class="fragment">14 weeks, 20 bugs fixed.</li>
+            <li class="fragment">My <a href="https://bugzilla.mozilla.org/page.cgi?id=user_activity.html&action=run&who=tkolodziejski%40mozilla.com&from=2014-08-12&to=2014-11-03&group=when">Bugzilla activity</a> list has 842 rows.</li>
+            <li class="fragment">Experimental "no-project" internship.
+              <ul class="no-bullets">
+                <li class="fragment plus">working closely with #fx-team (:tomasz)</li>
+                <li class="fragment plus">working on many different parts of firefox</li>
+                <li class="fragment minus">much more difficult to focus</li>
+                <li class="fragment minus">difficult to create awesome presentation with single topic</li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h1>Find bar</h1>
+          <img src="images/find-bar-wally.png" class="fragment" />
+        </section>
+
+        <section>
+          <h2>Tiny improvements</h2>
+          <ul>
+            <li class="fragment"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=923801">Case-sensitivity is tab specific.</a></li>
+            <li class="fragment"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1051187">"Match case" button retriggers the search.</a></li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Demo</h2>
+        </section>
+
+        <section>
+          <h2>Performance improvements</h2>
+          <ul>
+            <li class="fragment"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1060510">_getEditableNode more efficient</a></li>
+            <li class="fragment"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=429732">Highlighting a huge amount of matches does not hang the browser</a></li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Demo</h2>
+          <h3 class="fragment">DIY</h3>
+        </section>
+
+        <section>
+          <h3>Before</h3>
+          <ul>
+            <li class="fragment">Open a huge website like <a href="http://www.w3.org/html/wg/drafts/html/master/single-page.html">HTML5 doc</a>.</li>
+            <li class="fragment">Open findbar, check "highlight all".</li>
+            <li class="fragment">Type "a".</li>
+            <li class="fragment">Wait until browser unfreezes.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>After</h3>
+          <ul>
+            <li class="fragment">Open a huge website like <a href="http://www.w3.org/html/wg/drafts/html/master/single-page.html">HTML5 doc</a>.</li>
+            <li class="fragment">Open findbar, check "highlight all".</li>
+            <li class="fragment">Type "a".</li>
+            <li class="fragment">Happily cancel search.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>about:newtab</h2>
+          <img src="images/newtab.png" class="fragment" />
+        </section>
+
+        <section>
+          <h3>Favicon fallback</h3>
+          <div class="image-comparison">
+            <img src="images/newtab-no-logo.png" class="fragment" />
+            <img src="images/newtab-favicon.png" class="fragment" />
+          </div>
+
+          <div class="reference fragment"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1032324">about:newtab can't switch search engine if icon/logo/image is not available"</a></div>
+        </section>
+
+        <section>
+          <h2>Work week investigations</h2>
+          <ul>
+            <li class="fragment"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1077174">about:newtab search engine logo sometimes blinks</a></li>
+            <li class="fragment"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1075764">Get rid of moz-page-thumb protocol</a></li>
+            <li class="fragment"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1071645">Use CSS to resize the grid</a></li>
+          </ul>
+        </section>
+
+        <section class="page">
+          <h1>Loop</h1>
+          <h2 class="fragment">Firefox Hello!</h2>
+          <img src="images/hello.png" class="fragment" />
+        </section>
+
+        <section>
+          <h2>Style improvements</h2>
+        </section>
+
+        <section>
+          <h3>Footer</h3>
+
+          <div class="image-comparison">
+            <img src="images/hello-footer-before.png" class="fragment" />
+            <img src="images/hello.png" class="fragment" />
+          </div>
+
+          <div class="reference fragment"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1069028">Implement Loop panel footer layout/styling with FxA pieces</a></div>
+        </section>
+
+        <section>
+          <h3>Whitespace in conversation window</h3>
+
+          <div class="image-comparison">
+            <img src="images/whitespace-before.png" class="fragment" />
+            <img src="images/whitespace-after.png" class="fragment" />
+          </div>
+
+          <div class="reference fragment"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1077610">Unnecessary white space in conversation window</a></div>
+        </section>
+
+        <section>
+          <h3>Incoming call icon</h3>
+
+          <div class="image-comparison">
+            <img src="images/button-before.png" class="fragment" />
+            <img src="images/button-after.png" class="fragment" />
+          </div>
+
+          <div class="reference fragment"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1077653">Incoming call button icon spacing</a></div>
+        </section>
+
+        <section>
+          <h2>E10s</h2>
+
+          <div class="fragment"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1058116">New tabs should appear immediately to the right of the current tab.</a> (WIP)</div>
+        </section>
+
+        <section>
+          <h3>UITour</h3>
+          <div class="image-comparison">
+            <img src="images/uitour.png" class="fragment" />
+            <img src="images/uitour.png" class="fragment" />
+          </div>
+
+          <div class="reference fragment"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1073238">Split UITour.jsm into chrome and content parts that communicate via messages</a></div>
+        </section>
+
+        <section>
+          <h2>Privacy</h2>
+          <ul class="reference">
+            <li class="fragment"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1058435">ContentPrefService should record the time a permission was added/modified, and offer a way to reset those changed after a specified date</a></li>
+            <li class="fragment"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1074817">content-prefs.sqlite is corrupted(and site specific zoom level is lost)when downgrade from Nightly35.0a1 to Aurora34.0a2 and earlier</a></li>
+            <li class="fragment"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1081343">Create a pref to control Polaris</a></li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Build system</h2>
+        </section>
+
+        <section>
+          <h2>mach test whatever <span class="fragment" style="font-size: 50%">(fixed)</span></h2>
+
+          <small class="fragment">check-spidermonkey, cppunittest, crashtest, crashtest-ipc,
+          jetpack, mochitest-1, mochitest-2, mochitest-3, mochitest-4,
+          mochitest-5, mochitest-a11y, <em>mochitest-browser</em>, <em>mochitest-chrome</em>,
+          mochitest-devtools, mochitest-ipcplugins, <em>mochitest-plain</em>, reftest,
+          reftest-ipc, valgrind, <em>xpcshell</em></small>
+
+          <div class="reference fragment"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1057453">"mach test filename" does not run the file test</a></div>
+        </section>
+
+        <section>
+          <h2>mach watch</h2>
+          <div class="fragment">I modified <code>browser/themes/shared/newtab/newTab.inc.css</code>, what do I <code>mach build</code> to see the changes?</div>
+          <div class="reference">
+            <ul>
+              <li class="fragment"><a href="https://github.com/neojski/mach-watch">mach watch on github</a></li>
+              <li class="fragment"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1074289"> |mach build file| does not always build</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <section>
+          <h2>Thanks!</h2>
+        </section>
+
+        <section data-state="whimsy">
+          <h2>Questions?</h2>
+        </section>
+      </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.min.js"></script>
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+        ]
+      });
+
+    </script>
+    <script>
+    var start = true;
+    function whimsy() {
+      var whimsy = document.getElementById('whimsy');
+      var left, top;
+
+      start = !start;
+      if (start) {
+        left = -64;
+        top = -64;
+      } else {
+        left = window.innerWidth;
+        top = window.innerHeight; 
+      }
+
+      if (Math.random() > .5) {
+        left = Math.random() * window.innerWidth;
+      } else {
+        left = Math.random() * window.innerHeight;
+      }
+  
+      whimsy.style.transform = "translate(" + left + "px, " + top + "px)";
+    }
+
+    function randomInterval(f, from, to) {
+      var time = from + (to - from) * Math.random();
+      setTimeout(function() {
+        f();
+        randomInterval(f, from, to);
+      }, time);
+    }
+    
+    var MINUTE = 60 * 1000;
+    var from = 3 * MINUTE;
+    var to = 5 * MINUTE;
+
+    randomInterval(whimsy, from, to);
+
+    Reveal.addEventListener('whimsy', function() {
+      // Show
+      whimsy()
+    }, false);
+    </script>
+
+
+    <img src="images/whimsy.png" id="whimsy" />
+  </body>
+</html>
