@@ -77,7 +77,18 @@
     }
     .image-comparison img {
       float: left;
+      width: calc(50% - 40px);
       margin: 20px !important; /* reveal styles are not easily overridable */
+    }
+    .reveal code {
+      display: inline-block;
+      padding: .3em;
+      margin: .7em 0;
+      border: 2px solid;
+      border-radius: 5px;
+    }
+    .reveal .author {
+      margin: 3em 0;
     }
     </style>
   </head>
@@ -90,9 +101,10 @@
         <section>
           <h1>Firefox Frontend</h1>
           <h3>find bar, loop, e10s and more</h3>
-          <p>
-            <small>Tomasz Kołodziejski</small>
-          </p>
+          <div class="fragment author">
+            <div>Tomasz Kołodziejski</div>
+            <div><a href="http://neojski.github.io/mozilla-presentation">http://neojski.github.io/mozilla-presentation</div>
+          </div>
         </section>
 
         <section>
@@ -101,8 +113,8 @@
             <li class="fragment">Studying at the <a href="https://www.uj.edu.pl/">Jagiellonian University</a>
               in <a href="http://en.wikipedia.org/wiki/Krak%C3%B3w">Kraków</a>.</li>
             <li class="fragment"><a href="http://www.wolframalpha.com/input/?i=distance+from+krakow+to+san+francisco">Flew here 5967 miles</a>. <span class="fragment">That's 32 light milliseconds!</span></li>
-            <li class="fragment">14 weeks, 20 bugs fixed.</li>
             <li class="fragment">My <a href="https://bugzilla.mozilla.org/page.cgi?id=user_activity.html&action=run&who=tkolodziejski%40mozilla.com&from=2014-08-12&to=2014-11-03&group=when">Bugzilla activity</a> list has 842 rows.</li>
+            <li class="fragment">20 bugs fixed in 14 weeks.</li>
             <li class="fragment">Experimental "no-project" internship.
               <ul class="no-bullets">
                 <li class="fragment plus">working closely with #fx-team (:tomasz)</li>
@@ -122,13 +134,9 @@
         <section>
           <h2>Tiny improvements</h2>
           <ul>
-            <li class="fragment"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=923801">Case-sensitivity is tab specific.</a></li>
+            <li class="fragment"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=923801">Case-sensitivity now is tab specific.</a></li>
             <li class="fragment"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1051187">"Match case" button retriggers the search.</a></li>
           </ul>
-        </section>
-
-        <section>
-          <h2>Demo</h2>
         </section>
 
         <section>
@@ -171,9 +179,10 @@
 
         <section>
           <h3>Favicon fallback</h3>
-          <div class="image-comparison">
+          <div>
             <img src="images/newtab-no-logo.png" class="fragment" />
             <img src="images/newtab-favicon.png" class="fragment" />
+            <img src="images/newtab-magn.png" class="fragment" />
           </div>
 
           <div class="reference fragment"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1032324">about:newtab can't switch search engine if icon/logo/image is not available"</a></div>
@@ -191,7 +200,7 @@
         <section class="page">
           <h1>Loop</h1>
           <h2 class="fragment">Firefox Hello!</h2>
-          <img src="images/hello.png" class="fragment" />
+          <img src="images/hello.png" class="fragment" width="400" />
         </section>
 
         <section>
@@ -263,22 +272,25 @@
         <section>
           <h2>mach test whatever <span class="fragment" style="font-size: 50%">(fixed)</span></h2>
 
+          <div class="fragment">I want to run this test file. How do I do it?</div>
+
           <small class="fragment">check-spidermonkey, cppunittest, crashtest, crashtest-ipc,
           jetpack, mochitest-1, mochitest-2, mochitest-3, mochitest-4,
-          mochitest-5, mochitest-a11y, <em>mochitest-browser</em>, <em>mochitest-chrome</em>,
-          mochitest-devtools, mochitest-ipcplugins, <em>mochitest-plain</em>, reftest,
-          reftest-ipc, valgrind, <em>xpcshell</em></small>
+          mochitest-5, mochitest-a11y, <u>mochitest-browser</u>, <u>mochitest-chrome</u>,
+          mochitest-devtools, mochitest-ipcplugins, <u>mochitest-plain</u>, reftest,
+          reftest-ipc, valgrind, <u>xpcshell</u></small>
 
           <div class="reference fragment"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1057453">"mach test filename" does not run the file test</a></div>
         </section>
 
         <section>
           <h2>mach watch</h2>
-          <div class="fragment">I modified <code>browser/themes/shared/newtab/newTab.inc.css</code>, what do I <code>mach build</code> to see the changes?</div>
-          <div class="reference">
+          <div class="fragment">I modified <code>browser/themes/shared/newtab/newTab.inc.css</code></div>
+          <div class="fragment">What do I <code>mach build</code> to see the changes?</div>
+          <div class="reference fragment">
             <ul>
-              <li class="fragment"><a href="https://github.com/neojski/mach-watch">mach watch on github</a></li>
-              <li class="fragment"><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1074289"> |mach build file| does not always build</a></li>
+              <li><a href="https://github.com/neojski/mach-watch">mach watch on github</a></li>
+              <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1074289"> |mach build file| does not always build</a></li>
             </ul>
           </div>
         </section>
